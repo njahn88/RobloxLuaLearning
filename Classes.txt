@@ -1,0 +1,30 @@
+6/13/24
+Lua classes:
+	For a base class the following structure will work for module scripts
+
+	(Define default values for properties)
+	local PlatformMovementStrategy = {
+		speed = 0,
+		endPosition = Vector3.zero
+	}
+
+	(Class Constructor)
+	function PlatformMovementStrategy.new(speed, endPosition)
+		local self = setmetatable({}, PlatformMovementStrategy)
+		self.speed = speed
+		self.endPosition = endPosition
+		return self
+	end
+
+	(Class Method)
+	function PlatformMovementStrategy:Move(platform)
+		error('this should never be reached')
+	end
+
+	(Setup Metatable)
+	function PlatformMomemventStrategy.__index(tab, key)
+		return PlatformMovementStrategy[key]
+	end
+
+	(For modules it needs to return)
+	return PlatformMovementStrategy
