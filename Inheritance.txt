@@ -1,0 +1,37 @@
+(Gets the platform movement strategy from the module, PMS returns itself)
+local PlatformMovementStrategy = require(game.ServerScriptService.PlatformMovementStrategy)
+
+(What class is it inheriting from?)
+local BackAndForthStrategy = PlatformMovementStrategy
+
+(Constructor for implemented class)
+function BackAndForthStrategy.new(speed, endPosition)
+	local self = setmetatable({}, BackAndForthStrategy)
+	self.speed = speed
+	self.endPosition = endPosition
+	return self
+end
+
+(Override base function)
+function BackAndForthStrategy:Move(platform)
+	local startingPosition = platform.Position
+	local endPosition = self.endPosition
+	while true do
+		local tweenInfo = TweenInfo.new((endPosition - platform.Position).magnitude / self.speed, Enum.EasingStyle.Linear)
+		local tween = TweenService:Create(platform, tweenInfo, {Position = endPosition})
+		tween:Play()
+		tween.Completed:Wait()
+
+		tweenInfo = TweenInfo.new((startingPosition - platform.Position).magnitude / self.speed, Enum.EasingStyle.Linear)
+		tween = TweenService:Create(platform, tweenInfo, {Position = startingPosition})
+		tween:Play()
+		tween.Completed:Wait()
+	end
+end
+
+(set metatable)
+function BackAndForthStrategy.__index(tab, key)
+	return BackAndForthStrategy[key]
+end
+
+return BackAndForthStrategy
